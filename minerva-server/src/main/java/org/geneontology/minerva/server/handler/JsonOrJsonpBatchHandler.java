@@ -275,6 +275,31 @@ public class JsonOrJsonpBatchHandler extends OperationsImpl implements M3BatchHa
 		return state;
 	}
 
+	@Override
+	@JSONP(callback = JSONP_DEFAULT_CALLBACK, queryParam = JSONP_DEFAULT_OVERWRITE)
+	public M3BatchResponse m3BatchStatus() {
+		M3BatchResponse response = new M3BatchResponse("fakeUID", "fakeIntention", "fakePacketId");
+		Runtime runtime = Runtime.getRuntime();
+
+		String statusTextBeforeGC = "BeforeGC:\n";
+		statusTextBeforeGC += " maxMemory:           " + runtime.maxMemory() + "\n";
+		statusTextBeforeGC += " freeMemory:          " + runtime.freeMemory() + "\n";
+		statusTextBeforeGC += " totalMemory:         " + runtime.totalMemory() + "\n";
+		statusTextBeforeGC += " availableProcessors: " + runtime.availableProcessors() + "\n";
+		statusTextBeforeGC += " freeMemory:          " + runtime.freeMemory() + "\n";
+
+		runtime.gc();
+
+		String statusTextAfterGC = "AfterGC:\n";
+		statusTextAfterGC += " maxMemory:           " + runtime.maxMemory() + "\n";
+		statusTextAfterGC += " freeMemory:          " + runtime.freeMemory() + "\n";
+		statusTextAfterGC += " totalMemory:         " + runtime.totalMemory() + "\n";
+		statusTextAfterGC += " availableProcessors: " + runtime.availableProcessors() + "\n";
+		statusTextAfterGC += " freeMemory:          " + runtime.freeMemory() + "\n";
+
+		return error(response, statusTextBeforeGC + statusTextBeforeGC, null);
+	}
+
 	protected void checkPermissions(Entity entity, Operation operation, boolean isPrivileged) throws InsufficientPermissionsException {
 		// TODO make this configurable
 		if (isPrivileged == false) {

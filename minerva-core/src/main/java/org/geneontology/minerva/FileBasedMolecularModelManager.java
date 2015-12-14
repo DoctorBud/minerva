@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.geneontology.minerva.util.DebugTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -127,6 +128,7 @@ public class FileBasedMolecularModelManager<METADATA> extends CoreMolecularModel
 			throw new OWLOntologyCreationException("A model already exists for this db: "+modelId);
 		}
 		LOG.info("Generating blank model for new modelId: "+modelId);
+		DebugTools.logMemory("#< generateBlankModel");
 
 		// create empty ontology, use model id as ontology IRI
 		final OWLOntologyManager m = graph.getManager();
@@ -150,6 +152,8 @@ public class FileBasedMolecularModelManager<METADATA> extends CoreMolecularModel
 		}
 		// add to internal map
 		modelMap.put(modelId, model);
+
+		DebugTools.logMemory("#> generateBlankModel");
 		return model;
 	}
 	

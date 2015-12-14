@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.geneontology.minerva.util.DebugTools;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.coode.owlapi.obo12.parser.OBO12ParserFactory;
@@ -303,6 +304,8 @@ public abstract class CoreMolecularModelManager<METADATA> {
 	
 	private static Pair<OWLNamedIndividual, Set<OWLAxiom>> createIndividualInternal(IRI iri, OWLOntology abox, OWLClassExpression ce, Set<OWLAnnotation> annotations) {
 		LOG.info("Generating individual for IRI: "+iri);
+		DebugTools.logMemory("#< createIndividualInternal");
+
 		OWLDataFactory f = abox.getOWLOntologyManager().getOWLDataFactory();
 		OWLNamedIndividual i = f.getOWLNamedIndividual(iri);
 		
@@ -323,7 +326,9 @@ public abstract class CoreMolecularModelManager<METADATA> {
 				axioms.add(typeAxiom);
 			}
 		}
-		
+
+		DebugTools.logMemory("#> createIndividualInternal");
+
 		return Pair.of(i, axioms);
 	}
 	

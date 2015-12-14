@@ -40,7 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.io.ParserWrapper;
+import org.geneontology.minerva.util.ParserWrapper;
 
 public class LocalServerTest {
 

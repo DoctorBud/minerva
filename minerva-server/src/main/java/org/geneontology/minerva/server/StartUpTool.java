@@ -175,6 +175,14 @@ public class StartUpTool {
 			else if (opts.nextEq("--use-golr-url-logging|--golr-url-logging")) {
 				conf.useGolrUrlLogging = true;
 			}
+			else if (opts.nextEq("--version")) {
+				System.err.println(args[0] + " version: " + "0.0.1");
+				System.exit(-1);
+			}
+			else if (opts.nextEq("--help")) {
+				System.err.println(args[0] + " help: " + "No Help Available");
+				System.exit(-1);
+			}
 			else {
 				break;
 			}

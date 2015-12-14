@@ -245,4 +245,12 @@ public interface M3BatchHandler {
 			@QueryParam("requests") String requests,
 			@QueryParam("use-reasoner") String useReasoner);
 
+	/**
+	 * Jersey REST method for GET with three query parameters.
+	 * 
+	 * @return response convertible to JSON(P)
+	 */
+	@Path("m3BatchStatus")
+	@GET
+	public M3BatchResponse m3BatchStatus();
 }

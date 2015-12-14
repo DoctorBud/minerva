@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geneontology.minerva.util.DebugTools;
 import org.geneontology.minerva.UndoAwareMolecularModelManager;
 import org.geneontology.minerva.curie.CurieHandler;
 import org.geneontology.minerva.curie.CurieMappings;
@@ -45,7 +46,7 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import owltools.graph.OWLGraphWrapper;
-import owltools.io.ParserWrapper;
+import org.geneontology.minerva.util.ParserWrapper;
 
 @SuppressWarnings("unchecked")
 public class BatchModelHandlerTest {
@@ -74,7 +75,8 @@ public class BatchModelHandlerTest {
 		Runtime runtime = Runtime.getRuntime();
 		long maxMemory = runtime.maxMemory();
 		double maxMemoryGB = (double)maxMemory / (double)(1024L*1024L*1024L);
-		assertTrue("We expect at least 4GB for the max memory, current: "+maxMemory, maxMemoryGB > 4);
+		int expectedGB = 3;
+		assertTrue("We expect at least " + expectedGB + "GB for the max memory, current: "+maxMemory, maxMemoryGB > expectedGB);
 		
 		final OWLGraphWrapper graph = pw.parseToOWLGraph("http://purl.obolibrary.org/obo/go/extensions/go-lego.owl");
 		final OWLObjectProperty legorelParent = StartUpTool.getRelation("http://purl.obolibrary.org/obo/LEGOREL_0000000", graph);
@@ -130,6 +132,8 @@ public class BatchModelHandlerTest {
 
 	@Test
 	public void testTypeOperations() throws Exception {
+		DebugTools.logMemory("###< testTypeOperations");
+
 		final String modelId = generateBlankModel();
 		
 		// create two individuals
@@ -223,6 +227,7 @@ public class BatchModelHandlerTest {
 		assertEquals(1, iObjs4.length);
 		JsonOwlObject[] types = iObjs4[0].type;
 		assertEquals(2, types.length);
+		DebugTools.logMemory("###> testTypeOperations");
 	}
 	
 	private static JsonOwlObject createComplexExpr() {
@@ -254,6 +259,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testAddIndividual() throws Exception {
+		DebugTools.logMemory("###< testAddIndividual");
+
 		final String modelId = generateBlankModel();
 		
 		// create one individuals
@@ -275,6 +282,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testModelAnnotations() throws Exception {
+		DebugTools.logMemory("###< testModelAnnotations");	
+
 		final String modelId = generateBlankModel();
 		
 		final JsonAnnotation[] annotations1 = getModelAnnotations(modelId);
@@ -326,6 +335,8 @@ public class BatchModelHandlerTest {
 
 	@Test
 	public void testMultipleMeta() throws Exception {
+		DebugTools.logMemory("###< testMultipleMeta");	
+
 		models.dispose();
 		models.setPathToOWLFiles(folder.newFolder().getCanonicalPath());
 		
@@ -362,6 +373,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testFailOnMetaAndChange() throws Exception {
+		DebugTools.logMemory("###< testFailOnMetaAndChange");	
+
 		models.dispose();
 		
 		final String modelId = generateBlankModel();
@@ -383,6 +396,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testSaveAsNonMeta() throws Exception {
+		DebugTools.logMemory("###< testSaveAsNonMeta");	
+
 		models.dispose();
 		models.setPathToOWLFiles(folder.newFolder().getCanonicalPath());
 		
@@ -414,6 +429,8 @@ public class BatchModelHandlerTest {
 
 	@Test
 	public void testAddBlankModel() throws Exception {
+		DebugTools.logMemory("###< testAddBlankModel");	
+
 		models.dispose();
 		
 		final M3Request r1 = new M3Request();
@@ -448,6 +465,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testDelete() throws Exception {
+		DebugTools.logMemory("###< testDelete");	
+
 		models.dispose();
 		
 		final String modelId = generateBlankModel();
@@ -501,6 +520,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testDeleteEdge() throws Exception {
+		DebugTools.logMemory("###< testDeleteEdge");	
+
 		models.dispose();
 		final String modelId = generateBlankModel();
 		
@@ -565,10 +586,13 @@ public class BatchModelHandlerTest {
 		assertEquals(M3BatchResponse.SIGNAL_MERGE, response2.signal);
 		JsonOwlIndividual[] iObjs2 = BatchTestTools.responseIndividuals(response2);
 		assertEquals(2, iObjs2.length);
+		DebugTools.logMemory("###> testDeleteEdge");	
 	}
 	
 	@Test
 	public void testDeleteEvidenceIndividuals() throws Exception {
+		DebugTools.logMemory("###< testDeleteEvidenceIndividuals");	
+
 		models.dispose();
 		final String modelId = generateBlankModel();
 		
@@ -709,6 +733,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testInconsistentModel() throws Exception {
+		DebugTools.logMemory("###< testInconsistentModel");	
+
 		models.dispose();
 		
 		final String modelId = generateBlankModel();
@@ -725,6 +751,8 @@ public class BatchModelHandlerTest {
 
 	@Test
 	public void testInferencesRedundant() throws Exception {
+		DebugTools.logMemory("###< testInferencesRedundant");	
+
 		models.dispose();
 		final String modelId = generateBlankModel();
 		
@@ -753,6 +781,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testTrivialInferences() throws Exception {
+		DebugTools.logMemory("###< testTrivialInferences");	
+
 		models.dispose();
 		
 		final String modelId = generateBlankModel();
@@ -771,6 +801,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testInferencesAdditional() throws Exception {
+		DebugTools.logMemory("###< testInferencesAdditional");	
+
 		models.dispose();
 		
 		final String modelId = generateBlankModel();
@@ -799,6 +831,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testValidationBeforeSave() throws Exception {
+		DebugTools.logMemory("###< testValidationBeforeSave");	
+
 		assertTrue(JsonOrJsonpBatchHandler.VALIDATE_BEFORE_SAVE);
 		models.dispose();
 		
@@ -819,6 +853,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testPrivileged() throws Exception {
+		DebugTools.logMemory("###< testPrivileged");	
+
 		M3Request[] batch = new M3Request[1];
 		batch[0] = new M3Request();
 		batch[0].entity = Entity.model;
@@ -830,6 +866,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testExportLegacy() throws Exception {
+		DebugTools.logMemory("###< testExportLegacy");	
+
 		final String modelId = generateBlankModel();
 		
 		// create
@@ -857,6 +895,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testUndoRedo() throws Exception {
+		DebugTools.logMemory("###< testUndoRedo");	
+
 		final String modelId = generateBlankModel();
 
 		// create
@@ -953,6 +993,8 @@ public class BatchModelHandlerTest {
 
 	@Test
 	public void testAllIndividualEvidenceDelete() throws Exception {
+		DebugTools.logMemory("###< testAllIndividualEvidenceDelete");	
+
 		/*
 		 * create three individuals, two facts and two evidence individuals
 		 */
@@ -1086,6 +1128,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testAllIndividualUseCase() throws Exception {
+		DebugTools.logMemory("###< testAllIndividualUseCase");	
+
 		/*
 		 * Create a full set of individuals for an activity diagram of a gene.
 		 */
@@ -1150,6 +1194,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testVariables1() throws Exception {
+		DebugTools.logMemory("###< testVariables1");	
+
 		/*
 		 * TASK: create three individuals (mf,bp,cc) and a directed relation
 		 * between the new instances
@@ -1251,10 +1297,13 @@ public class BatchModelHandlerTest {
 		}
 		assertTrue(mfbp);
 		assertTrue(mfcc);
+		DebugTools.logMemory("###> testVariables1");	
 	}
 
 	@Test
 	public void testVariables2() throws Exception {
+		DebugTools.logMemory("###< testVariables2");	
+
 		/*
 		 * TASK: try to use an undefined variable
 		 */
@@ -1284,10 +1333,13 @@ public class BatchModelHandlerTest {
 				M3BatchResponse.MESSAGE_TYPE_ERROR, response.messageType);
 		assertTrue(response.message, response.message.contains("UnknownIdentifierException"));
 		assertTrue(response.message, response.message.contains("foo")); // unknown
+		DebugTools.logMemory("###> testVariables2");	
 	}
 	
 	@Test
 	public void testDeprecatedModel() throws Exception {
+		DebugTools.logMemory("###< testDeprecatedModel");	
+
 		models.setPathToOWLFiles(folder.newFolder().getCanonicalPath());
 		models.dispose();
 		
@@ -1340,6 +1392,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testAutoAnnotationsForAddType() throws Exception {
+		DebugTools.logMemory("###< testAutoAnnotationsForAddType");	
+
 		/*
 		 * test that if a type is added or removed from an individual also
 		 * updates the contributes annotation
@@ -1451,6 +1505,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testUpdateDateAnnotation() throws Exception {
+		DebugTools.logMemory("###< testUpdateDateAnnotation");	
+
 		/*
 		 * test that the last modification date is update for every change of an
 		 * individual or fact
@@ -1700,10 +1756,13 @@ public class BatchModelHandlerTest {
 		finally {
 			dateGenerator.useCounter = false;
 		}
+		DebugTools.logMemory("###> testUpdateDateAnnotation");	
 	}
 	
 	@Test
 	public void testUpdateDateAnnotationEvidence() throws Exception {
+		DebugTools.logMemory("###< testUpdateDateAnnotationEvidence");	
+
 		try {
 			dateGenerator.counter = 0;
 			dateGenerator.useCounter = true;
@@ -1853,6 +1912,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testCoordinateRoundTrip() throws Exception {
+		DebugTools.logMemory("###< testCoordinateRoundTrip");	
+
 		models.dispose();
 		models.setPathToOWLFiles(folder.newFolder().getCanonicalPath());
 		
@@ -1918,6 +1979,8 @@ public class BatchModelHandlerTest {
 
 	@Test
 	public void testPmidIRIIndividual() throws Exception {
+		DebugTools.logMemory("###< testPmidIRIIndividual");	
+
 		String modelId = generateBlankModel();
 		
 		M3Request r;
@@ -1965,6 +2028,8 @@ public class BatchModelHandlerTest {
 	
 	@Test
 	public void testUnknownIdentifier() throws Exception {
+		DebugTools.logMemory("###< testUnknownIdentifier");	
+
 		String modelId = generateBlankModel();
 		
 		M3Request r;
