@@ -57,8 +57,8 @@ public class StartUpTool {
 		public String defaultModelState = "development";
 		
 		public String golrUrl = null;
-		public String monarchUrl = null;
 		public String golrSeedUrl = null;
+		public boolean monarchModeGolr = false;
 		public int golrCacheSize = 100000;
 		public long golrCacheDuration = 24l;
 		public TimeUnit golrCacheDurationUnit = TimeUnit.HOURS;
@@ -157,7 +157,8 @@ public class StartUpTool {
 				conf.golrUrl = opts.nextOpt();
 			}
 			else if (opts.nextEq("--monarch-labels")) {
-				conf.monarchUrl = opts.nextOpt();
+				conf.golrUrl = opts.nextOpt();
+				conf.monarchModeGolr = true;
 			}
 			else if (opts.nextEq("--golr-seed")) {
 				conf.golrSeedUrl = opts.nextOpt();
@@ -204,21 +205,23 @@ public class StartUpTool {
 		// TODO make the modules configurable
 		conf.curieHandler = new MappedCurieHandler(defaultMappings, localMappings);
 
-		// wrap the Golr service with a cache
-		if (conf.golrUrl != null) {
+		LOGGER.info("Setting up Golr cache with size: "+conf.golrCacheSize+
+				" duration: " + conf.golrCacheDuration+" "+conf.golrCacheDurationUnit+
+				" use url logging: "+conf.useGolrUrlLogging +
+				(conf.monarchModeGolr ? " MonarchMode" : ""));
+
+		if (conf.monarchModeGolr) {
+			conf.lookupService = new MonarchExternalLookupService(conf.golrUrl, conf.curieHandler, conf.useGolrUrlLogging);
+		}
+		else {
 			conf.lookupService = new GolrExternalLookupService(conf.golrUrl, conf.curieHandler, conf.useGolrUrlLogging);
-			LOGGER.info("Setting up Golr cache with size: "+conf.golrCacheSize+" duration: "+
-					conf.golrCacheDuration+" "+conf.golrCacheDurationUnit+
-					" use url logging: "+conf.useGolrUrlLogging);
-			conf.lookupService = new CachingExternalLookupService(conf.lookupService, conf.golrCacheSize, conf.golrCacheDuration, conf.golrCacheDurationUnit);
 		}
-		if (conf.monarchUrl != null) {
-			conf.lookupService = new MonarchExternalLookupService(conf.monarchUrl, conf.curieHandler, conf.useGolrUrlLogging);
-			LOGGER.info("Setting up Monarch Golr cache with size: "+conf.golrCacheSize+" duration: "+
-					conf.golrCacheDuration+" "+conf.golrCacheDurationUnit+
-					" use url logging: "+conf.useGolrUrlLogging);
-			conf.lookupService = new CachingExternalLookupService(conf.lookupService, conf.golrCacheSize, conf.golrCacheDuration, conf.golrCacheDurationUnit);
-		}
+
+		// wrap the Golr service with a cache
+		LOGGER.info("Setting up Golr cache with size: "+conf.golrCacheSize+" duration: "+
+				conf.golrCacheDuration+" "+conf.golrCacheDurationUnit+
+				" use url logging: "+conf.useGolrUrlLogging);
+		conf.lookupService = new CachingExternalLookupService(conf.lookupService, conf.golrCacheSize, conf.golrCacheDuration, conf.golrCacheDurationUnit);
 		
 		Server server = startUp(conf);
 		try {

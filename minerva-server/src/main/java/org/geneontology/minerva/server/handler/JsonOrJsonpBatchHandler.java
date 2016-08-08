@@ -150,6 +150,13 @@ public class JsonOrJsonpBatchHandler extends OperationsImpl implements M3BatchHa
 			final Operation operation = request.operation;
 			checkPermissions(entity, operation, isPrivileged);
 
+			System.out.println("");
+			System.out.println("# entity" + entity);
+			System.out.println("# operation" + operation);
+			System.out.println("# userId" + userId);
+			System.out.println("# token" + token);
+			System.out.println("# values" + values);
+
 			// individual
 			if (Entity.individual == entity) {
 				String error = handleRequestForIndividual(request, operation, userId, token, values);

@@ -166,6 +166,13 @@ public abstract class CoreMolecularModelManager<METADATA> {
 	 */
 	public CoreMolecularModelManager(OWLGraphWrapper graph) throws OWLOntologyCreationException {
 		super();
+
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("#### DEBUG ENABLED");
+		}
+		else {
+			LOG.debug("#### DEBUG DISABLED");
+		}
 		this.graph = graph;
 		tboxIRI = getTboxIRI(graph);
 		init();

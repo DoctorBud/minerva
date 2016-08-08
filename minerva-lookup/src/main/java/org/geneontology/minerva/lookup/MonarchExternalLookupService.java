@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Thread;
+import java.lang.StackTraceElement;
+
 
 import org.apache.log4j.Logger;
 import org.bbop.golr.java.RetrieveGolrOntologyClass;
@@ -12,44 +15,47 @@ import org.geneontology.minerva.curie.CurieHandler;
 import org.semanticweb.owlapi.model.IRI;
 
 public class MonarchExternalLookupService implements ExternalLookupService {
-	
+
 	private final static Logger LOG = Logger.getLogger(MonarchExternalLookupService.class);
-	
+
 	private final RetrieveGolrOntologyClass monarchClient;
 
 	private final String monarchUrl;
 
 	private final CurieHandler curieHandler;
-	
+
 	public MonarchExternalLookupService(String monarchUrl, CurieHandler curieHandler) {
 		this(monarchUrl, curieHandler, false);
 	}
-	
+
 	public MonarchExternalLookupService(String monarchUrl, CurieHandler curieHandler, final boolean logGolrRequests) {
 		this(monarchUrl, new RetrieveGolrOntologyClass(monarchUrl, 2) {
 
 			@Override
 			protected void logRequest(URI uri) {
 				if(logGolrRequests) {
-					LOG.info("Golr ontology cls request: "+uri);
+					LOG.info("Monarch/Golr ontology cls request: "+uri);
+					// for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+					//     LOG.info("..." + ste);
+					// }
 				}
 			}
-			
+
 		}, curieHandler);
-		LOG.info("Creating Golr lookup service for minerva: "+monarchUrl);
+		LOG.info("Creating Monarch/Golr lookup service for minerva: "+monarchUrl);
 	}
-	
+
 	protected MonarchExternalLookupService(String golrUrl, RetrieveGolrOntologyClass ontologyClient, CurieHandler curieHandler) {
 		this.monarchClient = ontologyClient;
 		this.monarchUrl = golrUrl;
 		this.curieHandler = curieHandler;
 	}
-	
+
 	@Override
 	public List<LookupEntry> lookup(IRI id) {
 		String curie = curieHandler.getCuri(id);
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Monarch Golr look up for id: "+id+" curie: "+curie);
+			LOG.debug("Monarch/Golr look up for id: "+id+" curie: "+curie);
 		}
 		List<LookupEntry> result = new ArrayList<LookupEntry>();
 		try {
@@ -64,9 +70,8 @@ public class MonarchExternalLookupService implements ExternalLookupService {
 			}
 		}
 		catch(IOException exception) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Error during retrieval for id: "+id+" GOLR-URL: "+monarchUrl, exception);
-			}
+			System.out.println("PRINTLN: Error during retrieval for id: "+id+" curie: "+curie + " GOLR-URL: "+monarchUrl, exception);
+			LOG.warn("Error during retrieval for id: "+id+" curie: "+curie + " GOLR-URL: "+monarchUrl, exception);
 			return null;
 		}
 		catch (Throwable exception) {
@@ -83,8 +88,8 @@ public class MonarchExternalLookupService implements ExternalLookupService {
 
 	@Override
 	public String toString() {
-		return "Monarch: "+monarchUrl;
+		return "Monarch: " + monarchUrl;
 	}
 
-	
+
 }

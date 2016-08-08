@@ -62,6 +62,9 @@ public class ModelWriterHelper implements PreFileSaveHandler {
 	}
 
 	List<OWLOntologyChange> generateLabelsAndIds(OWLOntology model, ExternalLookupService lookupService) {
+		System.out.println("generateLabelsAndIds. model: " + model);
+		System.out.println("generateLabelsAndIds. curieHandler: " + curieHandler);
+		System.out.println("generateLabelsAndIds. lookupService: " + lookupService);
 		if (curieHandler == null && lookupService == null) {
 			return Collections.emptyList();
 		}
